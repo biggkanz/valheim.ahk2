@@ -1,42 +1,26 @@
 #maxthreadsperhotkey 2
 #MaxHotkeysPerInterval 500
 #HotkeyInterval 1000
-global Toggle := false
-global EDown := false
+global AutoClickIsEnabled := false
+global RunIsEnabled := false
 global Sprint := false
 
-; Move 6,7,8 equpiment keys closer to movement keys
-~Q::
+; bind equipment slots to additional keys only while valheim is active
+slot(slotNumber)
 {
 	if(WinActive("ahk_exe valheim.exe"))
 	{
-		Send "{6}"
+		Send "{" slotNumber "}"
 	}
 }
 
-~W::
+; activates slow auto click for crafting
+autoMouseClick()
 {
-	if(WinActive("ahk_exe valheim.exe"))
+	if (!AutoClickIsEnabled)
 	{
-		Send "{7}"
-	}
-}
-
-~R::
-{
-	if(WinActive("ahk_exe valheim.exe"))
-	{
-		Send "{8}"
-	}
-}
-
-; PgUp activates slow auto click for crafting
-~PgUp::
-{
-	if (!Toggle)
-	{
-		Toggle := true
-		while (Toggle and WinActive("ahk_exe valheim.exe"))
+		AutoClickIsEnabled := true
+		while (AutoClickIsEnabled and WinActive("ahk_exe valheim.exe"))
 		{
 		Sleep 2500
 		Click 
@@ -44,33 +28,31 @@ global Sprint := false
 	}	
 	else
 	{
-		Toggle := false
+		AutoClickIsEnabled := false
 	}
 }
 
-; Tilde toggles auto-run that
-~`::
+; enables auto run by holding down run key
+autoRun()
 {
-	if (!EDown and WinActive("ahk_exe valheim.exe"))
+	if (!RunIsEnabled and WinActive("ahk_exe valheim.exe"))
 	{
 		Send "{E down}"
-		EDown := true
+		RunIsEnabled := true
 	}
-	else if (EDown)
+	else if (RunIsEnabled)
 	{
 		Send "{E up}"
-		EDown := false
+		RunIsEnabled := false
 	}
 }
 
-; Spam click V (use)
-~XButton1::v
-~XButton1::
-~v::
+; Spam click use on long press 30 times
+repeatUseKey(useKey)
 {
 	pressed := 0
 	use := 0
-	while (getkeystate("v","p") and WinActive("ahk_exe valheim.exe"))
+	while (getkeystate(useKey,"p") and WinActive("ahk_exe valheim.exe"))
 	{
 		pressed++
 		sleep 10
@@ -80,9 +62,9 @@ global Sprint := false
 			{
 				use++
 				sleep 10			
-				Send "{v down}"			
+				Send "{" useKey " down}"			
 				sleep 10	
-				Send "{v up}"
+				Send "{" useKey " up}"
 			}	
 			return		
 		}
@@ -90,30 +72,42 @@ global Sprint := false
 	return
 }
 
-;---------------------------------------
-; misc utlity
-
-; Any movement key will disable auto-run
-~E::
-~D::
-~S::
-~F::
+; utility functions
+disableAutoRun()
 {
-	if (EDown)
+	if (RunIsEnabled)
 	{
 		Send "{E up}"
-		EDown := false
+		RunIsEnabled := false
 	}
 }
 
-;Left mouse button disables any auto
-~LButton::
+disableAutoClick()
 {
-	if(Toggle)
+	if(AutoClickIsEnabled)
 	{
-		Toggle := false
+		AutoClickIsEnabled := false
 	}
 }
+
+; bind hotkeys to functions
+~PgUp::autoMouseClick()
+~Q::slot("6")
+~W::slot("7")
+~R::slot("8")
+~`::autoRun()
+
+~XButton1::v
+~XButton1::repeatUseKey("v")
+~v::repeatUseKey("v")
+
+; Any movement key will disable auto-run
+~E::disableAutoRun()
+~D::disableAutoRun()
+~S::disableAutoRun()
+~F::disableAutoRun()
+
+~LButton::disableAutoClick()
 
 ; F9 key will enable or disable this script (for typing in game)
 #SuspendExempt
