@@ -47,8 +47,8 @@ autoRun(runKey)
 	}
 }
 
-; spam click use on long press 30 times
-repeatUseKey(useKey)
+; spam click use on long press (150 ms) [repeats] times
+repeatUseKey(useKey,repeats)
 {
 	pressed := 0
 	use := 0
@@ -58,7 +58,7 @@ repeatUseKey(useKey)
 		sleep 10
 		if (pressed > 15 and WinActive("ahk_exe valheim.exe"))
 		{			
-			while (use < 30)
+			while (use < repeats)
 			{
 				use++
 				sleep 10			
@@ -89,26 +89,3 @@ disableAutoClick()
 		AutoClickIsEnabled := false
 	}
 }
-
-; bind hotkeys to functions
-~PgUp::autoMouseClick()
-~Q::slot("6")
-~W::slot("7")
-~R::slot("8")
-~`::autoRun("E")
-
-~XButton1::v
-~XButton1::repeatUseKey("v")
-~v::repeatUseKey("v")
-
-; Any movement key will disable auto-run
-~E::disableAutoRun()
-~D::disableAutoRun()
-~S::disableAutoRun()
-~F::disableAutoRun()
-
-~LButton::disableAutoClick()
-
-; F9 key will enable or disable this script (for typing in game)
-#SuspendExempt
-F9::Suspend -1
