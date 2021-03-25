@@ -1,9 +1,9 @@
-#maxthreadsperhotkey 2
+; quality of life functions for valhleim
+#maxthreadsperhotkey 2 ; allow one extra thread to break out of loops
 #MaxHotkeysPerInterval 500
 #HotkeyInterval 1000
 global AutoClickIsEnabled := false
 global RunIsEnabled := false
-global Sprint := false
 
 ; bind equipment slots to additional keys only while valheim is active
 slot(slotNumber)
@@ -33,21 +33,21 @@ autoMouseClick()
 }
 
 ; enables auto run by holding down run key
-autoRun()
+autoRun(runKey)
 {
 	if (!RunIsEnabled and WinActive("ahk_exe valheim.exe"))
 	{
-		Send "{E down}"
+		Send "{" runKey " down}"
 		RunIsEnabled := true
 	}
 	else if (RunIsEnabled)
 	{
-		Send "{E up}"
+		Send "{" runKey " up}"
 		RunIsEnabled := false
 	}
 }
 
-; Spam click use on long press 30 times
+; spam click use on long press 30 times
 repeatUseKey(useKey)
 {
 	pressed := 0
@@ -72,7 +72,7 @@ repeatUseKey(useKey)
 	return
 }
 
-; utility functions
+; disable functions
 disableAutoRun()
 {
 	if (RunIsEnabled)
@@ -95,7 +95,7 @@ disableAutoClick()
 ~Q::slot("6")
 ~W::slot("7")
 ~R::slot("8")
-~`::autoRun()
+~`::autoRun("E")
 
 ~XButton1::v
 ~XButton1::repeatUseKey("v")
