@@ -1,5 +1,7 @@
 # valheim.ahk2
-A Valheim quality of life script written for AutoHotKeyV2
+A Valheim quality of life script written for AutoHotkey 2.0
+
+** Updated for AutoHotkey 2.0 beta.3 **
 
 I was annoyed with the control scheme in Valheim so I wrote this script to correct a few things:
 * "long press" of use key will send 25 rapid keypresses to quickly fill up kilns and forges
